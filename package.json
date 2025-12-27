@@ -1,7 +1,7 @@
 {
   "name": "aranhaflix-gerador",
-  "version": "1.0.0",
-  "description": "Gerador de vídeos AranhaFlix",
+  "version": "1.1.0",
+  "description": "Gerador de Cortes de Filmes AranhaFlix",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
