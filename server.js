@@ -88,5 +88,6 @@ app.post('/gerar-aranha', async (req, res) => {
 // Porta do Render ou 3000 local
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 AranhaFlix ON! Porta: ${PORT}`);
+    console.log(`🚀 AranhaFlix ON! Porta: ${3000}`);
 });
+
