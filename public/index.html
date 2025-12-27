@@ -2,65 +2,73 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>AranhaFlix - Gerador PRO</title>
+    <title>Painel AranhaFlix PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-black text-white flex flex-col items-center justify-center min-h-screen p-4">
-    <div class="bg-zinc-900 p-8 rounded-2xl border-2 border-red-600 shadow-2xl w-full max-w-md text-center">
-        <h1 class="text-4xl font-black text-red-600 mb-2">ARANHAFLIX</h1>
-        <p class="text-gray-400 mb-6 uppercase text-xs tracking-widest">Gerador Automático de Vídeos</p>
-        
-        <input type="text" id="urlYoutube" placeholder="Cole o link do YouTube aqui..." 
-               class="w-full bg-black border border-zinc-700 p-4 rounded-lg mb-4 outline-none focus:border-red-600 transition-all">
-        
-        <button onclick="gerarVideo()" id="btnGerar" class="w-full bg-red-600 hover:bg-red-700 p-4 rounded-lg font-bold uppercase transition-all">
-            GERAR VÍDEO EDITADO 🚀
-        </button>
+<body class="bg-black text-white min-h-screen flex items-center justify-center p-6">
 
-        <div id="resultado" class="mt-6 hidden">
-            <p class="text-green-500 font-bold mb-2">✅ VÍDEO PRONTO!</p>
-            <a id="linkDownload" href="#" download class="block bg-blue-600 p-3 rounded-lg hover:bg-blue-700 transition-all">
-                BAIXAR VÍDEO AGORA
-            </a>
+    <div class="max-w-md w-full bg-zinc-900 p-8 rounded-3xl border-b-8 border-red-600 shadow-2xl">
+        <h1 class="text-3xl font-black text-red-600 italic text-center mb-6">ARANHAFLIX CORTES</h1>
+        
+        <div class="space-y-4">
+            <input type="text" id="link" placeholder="Link do Filme (YouTube)" 
+                   class="w-full bg-zinc-800 border border-zinc-700 p-4 rounded-xl outline-none focus:border-red-600 text-white">
+            
+            <div class="flex items-center gap-3">
+                <input type="number" id="minuto" placeholder="Minuto de Início" 
+                       class="w-full bg-zinc-800 border border-zinc-700 p-4 rounded-xl text-white">
+                <span class="text-gray-500 text-sm">Corte de 60s</span>
+            </div>
+
+            <button onclick="gerar()" id="btn" class="w-full bg-red-600 hover:bg-red-700 py-4 rounded-xl font-bold transition-all shadow-lg">
+                GERAR CORTE AUTOMÁTICO 🕷️
+            </button>
         </div>
 
-        <div id="status" class="mt-4 text-zinc-500 text-sm hidden animate-pulse">
-            🕷️ AranhaFlix está trabalhando no seu vídeo...
+        <div id="loader" class="hidden mt-6 text-center animate-pulse text-zinc-500">
+            Editando vídeo... Aguarde o processamento.
+        </div>
+
+        <div id="resultado" class="hidden mt-6">
+            <a id="download" href="#" download class="block w-full bg-green-600 text-center py-3 rounded-xl font-bold">
+                📥 BAIXAR CORTE EDITADO
+            </a>
         </div>
     </div>
 
     <script>
-        async function gerarVideo() {
-            const url = document.getElementById('urlYoutube').value;
-            const btn = document.getElementById('btnGerar');
-            const status = document.getElementById('status');
-            const resultado = document.getElementById('resultado');
+        async function gerar() {
+            const link = document.getElementById('link').value;
+            const min = document.getElementById('minuto').value;
+            const btn = document.getElementById('btn');
+            const loader = document.getElementById('loader');
+            const resArea = document.getElementById('resultado');
 
-            if(!url) return alert("Cole um link!");
+            if(!link) return alert("Insira o link!");
 
             btn.disabled = true;
-            status.classList.remove('hidden');
-            resultado.classList.add('hidden');
+            loader.classList.remove('hidden');
+            resArea.classList.add('hidden');
 
-            try {
-                const response = await fetch('/gerar-aranha', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ videoUrl: url, idRevendedor: 'default' })
-                });
+            const response = await fetch('/gerar-corte', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ 
+                    videoUrl: link, 
+                    startTime: min * 60, 
+                    idCliente: 'default' 
+                })
+            });
 
-                const data = await response.json();
-                
-                if(data.url) {
-                    document.getElementById('linkDownload').href = data.url;
-                    resultado.classList.remove('hidden');
-                }
-            } catch (err) {
-                alert("Erro ao gerar. Verifique se o vídeo é muito longo.");
-            } finally {
-                btn.disabled = false;
-                status.classList.add('hidden');
+            const data = await response.json();
+            if(data.url) {
+                document.getElementById('download').href = data.url;
+                resArea.classList.remove('hidden');
+            } else {
+                alert("Erro ao gerar vídeo.");
             }
+            btn.disabled = false;
+            loader.classList.add('hidden');
         }
     </script>
 </body>
