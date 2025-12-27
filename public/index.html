@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>AranhaFlix - Gerador PRO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white flex flex-col items-center justify-center min-h-screen p-4">
+    <div class="bg-zinc-900 p-8 rounded-2xl border-2 border-red-600 shadow-2xl w-full max-w-md text-center">
+        <h1 class="text-4xl font-black text-red-600 mb-2">ARANHAFLIX</h1>
+        <p class="text-gray-400 mb-6 uppercase text-xs tracking-widest">Gerador Automático de Vídeos</p>
+        
+        <input type="text" id="urlYoutube" placeholder="Cole o link do YouTube aqui..." 
+               class="w-full bg-black border border-zinc-700 p-4 rounded-lg mb-4 outline-none focus:border-red-600 transition-all">
+        
+        <button onclick="gerarVideo()" id="btnGerar" class="w-full bg-red-600 hover:bg-red-700 p-4 rounded-lg font-bold uppercase transition-all">
+            GERAR VÍDEO EDITADO 🚀
+        </button>
+
+        <div id="resultado" class="mt-6 hidden">
+            <p class="text-green-500 font-bold mb-2">✅ VÍDEO PRONTO!</p>
+            <a id="linkDownload" href="#" download class="block bg-blue-600 p-3 rounded-lg hover:bg-blue-700 transition-all">
+                BAIXAR VÍDEO AGORA
+            </a>
+        </div>
+
+        <div id="status" class="mt-4 text-zinc-500 text-sm hidden animate-pulse">
+            🕷️ AranhaFlix está trabalhando no seu vídeo...
+        </div>
+    </div>
+
+    <script>
+        async function gerarVideo() {
+            const url = document.getElementById('urlYoutube').value;
+            const btn = document.getElementById('btnGerar');
+            const status = document.getElementById('status');
+            const resultado = document.getElementById('resultado');
+
+            if(!url) return alert("Cole um link!");
+
+            btn.disabled = true;
+            status.classList.remove('hidden');
+            resultado.classList.add('hidden');
+
+            try {
+                const response = await fetch('/gerar-aranha', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ videoUrl: url, idRevendedor: 'default' })
+                });
+
+                const data = await response.json();
+                
+                if(data.url) {
+                    document.getElementById('linkDownload').href = data.url;
+                    resultado.classList.remove('hidden');
+                }
+            } catch (err) {
+                alert("Erro ao gerar. Verifique se o vídeo é muito longo.");
+            } finally {
+                btn.disabled = false;
+                status.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
