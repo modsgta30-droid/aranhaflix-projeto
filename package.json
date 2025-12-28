@@ -1,7 +1,6 @@
 {
-  "name": "bot-whatsapp-sigma",
+  "name": "aranhabot-whatsapp",
   "version": "1.0.0",
-  "description": "Bot de Automação para IPTV Sigma",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
