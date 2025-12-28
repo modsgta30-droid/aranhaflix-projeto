@@ -7,31 +7,37 @@ const app = express();
 app.use(express.json());
 app.use(express.static('public'));
 
-// Configuração do Bot de WhatsApp
+// Configuração do WhatsApp
 const client = new Client({
-    authStrategy: new LocalAuth(),
-    puppeteer: { args: ['--no-sandbox'] } // Necessário para rodar no Render
+    authStrategy: new LocalAuth(), // Salva a sessão para não deslogar
+    puppeteer: { 
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'] 
+    }
 });
 
-// Quando o WhatsApp gerar o código QR para você ler
+// Mostra o QR Code no terminal do Render
 client.on('qr', (qr) => {
-    console.log('SCANEE O QR CODE ABAIXO NO SEU WHATSAPP:');
+    console.log('--- LEIA ESTE QR CODE NO SEU WHATSAPP ---');
     qrcode.generate(qr, { small: true });
 });
 
-client.on('ready', () => {
-    console.log('✅ Bot de WhatsApp conectado com sucesso!');
-});
+client.on('ready', () => console.log('✅ Bot Conectado e Pronto!'));
 
-// Lógica de conversa (O que o bot responde)
+// Lógica de Atendimento Automático
 client.on('message', async msg => {
-    if (msg.body === '!teste') {
-        msg.reply('🕷️ AranhaBot: Gerando seu teste no Sigma... Aguarde 1 minuto.');
-        // Aqui depois vamos colocar a conexão com seu painel Sigma
+    const texto = msg.body.toLowerCase();
+
+    if (texto === '1' || texto === 'teste') {
+        msg.reply('🕷️ *AranhaBot:* Gerando seu teste no painel Sigma... Aguarde 30 segundos.');
+        // Lógica de geração automática entrará aqui
+    } 
+    
+    if (texto === 'oi' || texto === 'menu') {
+        msg.reply('Olá! Sou o assistente AranhaFlix.\n\nDigite:\n1 - Teste Grátis\n2 - Comprar Plano\n3 - Suporte');
     }
 });
 
 client.initialize();
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`💻 Painel Web rodando na porta ${PORT}`));
+app.listen(process.env.PORT || 3000, () => console.log('🚀 Painel Web Ativo'));
