@@ -1,15 +1,16 @@
 {
-  "name": "aranhaflix-gerador",
-  "version": "1.1.0",
-  "description": "Gerador de Cortes de Filmes AranhaFlix",
+  "name": "bot-whatsapp-sigma",
+  "version": "1.0.0",
+  "description": "Bot de Automação para IPTV Sigma",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
-    "fluent-ffmpeg": "^2.1.2",
-    "ytdl-core": "^4.11.5",
+    "whatsapp-web.js": "^1.23.0",
+    "qrcode-terminal": "^0.12.0",
+    "puppeteer": "^21.0.0",
     "cors": "^2.8.5"
   }
 }
